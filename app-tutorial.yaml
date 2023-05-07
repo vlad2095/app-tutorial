@@ -10,7 +10,7 @@ app:
     name: Monk Tutorial App
     icon: https://d29fhpw069ctt2.cloudfront.net/icon/image/37732/preview.svg
     description: A simple app that uses Monk to connect to a MongoDB database
-    publisher: monk-io
+    publisher: monk.io
   containers:
     app:
       image: nooga/app-tutorial:latest
@@ -26,7 +26,7 @@ app:
   connections:
     mongo:
       runnable: app-tutorial/database
-      service: db
+      service: mongodb
   variables: 
     port:
       env: PORT
