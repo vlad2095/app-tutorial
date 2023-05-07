@@ -14,6 +14,9 @@ app:
   containers:
     app:
       image: nooga/app-tutorial:latest
+      environment: 
+        - <- `DB_HOST=` connection-hostname("mongo") concat-all
+        - <- `DB_PORT=` connection-port("mongo") concat-all
   services:
     app:
       container: app
@@ -30,16 +33,6 @@ app:
       type: int
       value: 8080
       description: The port to run the app on
-    db-host:
-      env: DB_HOST
-      type: string
-      value: <- connection-hostname("mongo") default("localhost")
-      description: The host of the database
-    db-port:
-      env: DB_PORT
-      type: int
-      value: <- connection-port("mongo") default(27017)
-      description: The port of the database
 
 stack:
   defines: process-group
