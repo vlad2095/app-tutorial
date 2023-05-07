@@ -1,0 +1,48 @@
+namespace: app-tutorial
+
+database:
+  defines: runnable
+  inherits: mongodb/mongodb
+
+app:
+  defines: runnable
+  metadata:
+    name: Monk Tutorial App
+    icon: https://d29fhpw069ctt2.cloudfront.net/icon/image/37732/preview.svg
+    description: A simple app that uses Monk to connect to a MongoDB database
+    publisher: monk-io
+  containers:
+    app:
+      image: nooga/app-tutorial:latest
+  services:
+    app:
+      container: app
+      port: <- $port
+      host-port: <- $port
+      protocol: tcp
+  connections:
+    mongo:
+      runnable: app-tutorial/database
+      service: db
+  variables: 
+    port:
+      env: PORT
+      type: int
+      value: 8080
+      description: The port to run the app on
+    db-host:
+      env: DB_HOST
+      type: string
+      value: <- connection-hostname("mongo") default("localhost")
+      description: The host of the database
+    db-port:
+      env: DB_PORT
+      type: int
+      value: <- connection-port("mongo") default(27017)
+      description: The port of the database
+
+stack:
+  defines: process-group
+  runnable-list:
+    - app-tutorial/database
+    - app-tutorial/app

@@ -1,0 +1,29 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monk Demo Guestbook</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="header">
+        <h1>Of course it works!</h1>
+        <img src="monk.png" alt="MonkOS Logo">
+    </div> 
+    <div class="form">
+        <form action="/posts" method="post" enctype="multipart/form-data">
+            <input type="text" name="name" id="name" placeholder="Name">
+            <input type="text" name="message" id="message" placeholder="Message">
+            <input type="file" name="image" id="image">
+            <input type="submit" value="Send">
+        </form>
+    </div>
+    <div class="messages" id="messages">
+        <div class="message">
+            hello 
+        </div>
+    </div>
+</body>
+</html>
