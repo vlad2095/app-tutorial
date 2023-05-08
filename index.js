@@ -70,6 +70,6 @@ fastify.get("/post/:id", async function (req, reply) {
   }
 });
 
-fastify.listen({ port: PORT }, (err) => {
+fastify.listen({ port: PORT, host: "0.0.0.0" }, (err) => {
   if (err) throw err;
 });
