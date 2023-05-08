@@ -7,10 +7,11 @@ database:
 app:
   defines: runnable
   metadata:
-    name: Monk Tutorial App
+    name: Monk Tutorial App Service
     icon: https://d29fhpw069ctt2.cloudfront.net/icon/image/37732/preview.svg
-    description: A simple app that uses Monk to connect to a MongoDB database
+    description: A simple service written in Node.js that connects to a MongoDB database.
     publisher: monk.io
+    source: https://github.com/monk-io/app-tutorial
   containers:
     app:
       image: nooga/app-tutorial:latest
@@ -32,10 +33,16 @@ app:
       env: PORT
       type: int
       value: 8080
-      description: The port to run the app on
+      description: The port to listen for HTTP connections on.
 
 stack:
   defines: process-group
+  metadata:
+    name: Monk Tutorial App
+    icon: https://d29fhpw069ctt2.cloudfront.net/icon/image/37732/preview.svg
+    description: A simple app that has one service and one MongoDB database.
+    publisher: monk.io
+    source: https://github.com/monk-io/app-tutorial
   runnable-list:
     - app-tutorial/database
     - app-tutorial/app
