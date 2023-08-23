@@ -1,48 +1,40 @@
 namespace: app-tutorial
-
-database:
-  defines: runnable
-  inherits: mongodb/mongodb
-
-app:
+app-tutorial:
   defines: runnable
   metadata:
-    name: Monk Tutorial App Service
-    icon: https://d29fhpw069ctt2.cloudfront.net/icon/image/37732/preview.svg
-    description: A simple service written in Node.js that connects to a MongoDB database.
-    publisher: monk.io
-    source: https://github.com/monk-io/app-tutorial
+    name: app-tutorial
+    description: >-
+      The application is a simple blogging platform where users can write and
+      view posts.
+    icon: https://emojiapi.dev/api/v1/robot.svg
   containers:
-    app:
-      image: nooga/app-tutorial:latest
-      environment: 
-        - <- `DB_HOST=` connection-hostname("mongo") concat-all
-        - <- `DB_PORT=` connection-port("mongo") concat-all
+    app-tutorial:
+      build: .
   services:
-    app:
-      container: app
+    application-server-port:
+      container: app-tutorial
       port: <- $port
       host-port: <- $port
-      protocol: tcp
+      publish: false
+      protocol: TCP
+      description: Main port that the application listens to for serving HTTP requests.
   connections:
-    mongo:
-      runnable: app-tutorial/database
-      service: mongodb
-  variables: 
+    database-connection:
+      target: jenkins/server
+      service: http
+  variables:
     port:
       env: PORT
       type: int
-      value: 8080
-      description: The port to listen for HTTP connections on.
-
-stack:
-  defines: process-group
-  metadata:
-    name: Monk Tutorial App
-    icon: https://d29fhpw069ctt2.cloudfront.net/icon/image/37732/preview.svg
-    description: A simple app that has one service and one MongoDB database.
-    publisher: monk.io
-    source: https://github.com/monk-io/app-tutorial
-  runnable-list:
-    - app-tutorial/database
-    - app-tutorial/app
+      description: The port the application listens on.
+      value: '8080'
+    db-host:
+      env: DB_HOST
+      type: string
+      description: The host of the MongoDB server.
+      value: <- connection-hostname("database-connection")
+    db-port:
+      env: DB_PORT
+      type: int
+      description: The port of the MongoDB server.
+      value: <- connection-port("database-connection")
