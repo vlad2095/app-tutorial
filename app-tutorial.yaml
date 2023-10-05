@@ -1,48 +1,46 @@
 namespace: app-tutorial
-
-database:
-  defines: runnable
-  inherits: mongodb/mongodb
-
-app:
+app-tutorial:
   defines: runnable
   metadata:
-    name: Monk Tutorial App Service
-    icon: https://d29fhpw069ctt2.cloudfront.net/icon/image/37732/preview.svg
-    description: A simple service written in Node.js that connects to a MongoDB database.
-    publisher: monk.io
-    source: https://github.com/monk-io/app-tutorial
+    name: app-tutorial
+    description: A web application allowing to create and view posts, built using fastify.
+    icon: https://emojiapi.dev/api/v1/robot.svg
   containers:
-    app:
-      image: nooga/app-tutorial:latest
-      environment: 
-        - <- `DB_HOST=` connection-hostname("mongo") concat-all
-        - <- `DB_PORT=` connection-port("mongo") concat-all
+    app-tutorial:
+      build: .
   services:
-    app:
-      container: app
+    http-port:
+      container: app-tutorial
       port: <- $port
       host-port: <- $port
-      protocol: tcp
+      publish: false
+      protocol: TCP
+      description: The HTTP port that the server is listening on
   connections:
-    mongo:
-      runnable: app-tutorial/database
+    mongodb-connection:
+      target: app-tutorial/mongodb
       service: mongodb
-  variables: 
+  variables:
     port:
       env: PORT
       type: int
+      description: The port for the server to run on
       value: 8080
-      description: The port to listen for HTTP connections on.
-
+    db-host:
+      env: DB_HOST
+      type: string
+      description: The hostname of the MongoDB instance
+      value: <- connection-hostname("mongodb-connection")
+    db-port:
+      env: DB_PORT
+      type: int
+      description: The port of the MongoDB instance
+      value: <- connection-port("mongodb-connection")
+mongodb:
+  defines: runnable
+  inherits: mongodb/mongodb
 stack:
-  defines: process-group
-  metadata:
-    name: Monk Tutorial App
-    icon: https://d29fhpw069ctt2.cloudfront.net/icon/image/37732/preview.svg
-    description: A simple app that has one service and one MongoDB database.
-    publisher: monk.io
-    source: https://github.com/monk-io/app-tutorial
-  runnable-list:
-    - app-tutorial/database
-    - app-tutorial/app
+  defines: group
+  members:
+    - app-tutorial/app-tutorial
+    - app-tutorial/mongodb
