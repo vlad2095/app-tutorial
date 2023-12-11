@@ -1,0 +1,81 @@
+namespace: app-tutorial
+
+mongo:
+  defines: runnable
+  inherits: mongodb/mongodb
+  metadata:
+    name: mongo
+    description: An external MongoDB database service required by the application.
+    icon: >-
+      https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRA8VbFgxH-i78AZmNqD93mVRkTRd30POqLeCmg9T05ug&s
+  variables:
+    mongo-image:
+      type: string
+      value: latest
+      description: ''
+    mongo-init-database:
+      type: string
+      value: mongo
+      description: ''
+    mongo-init-password:
+      type: string
+      value: password
+      description: ''
+    mongo-init-username:
+      type: string
+      value: mongo
+      description: ''
+    mongodb-image:
+      type: string
+      value: latest
+      description: ''
+
+monk-tutorial-app:
+  defines: runnable
+  metadata:
+    name: monk-tutorial-app
+    description: >-
+      A Node.js web application serving static files and a backend API for a
+      guestbook application.
+    icon: https://emojiapi.dev/api/v1/robot.svg
+  containers:
+    monk-tutorial-app:
+      image: env-3565.registry.local/monk-tutorial-app:master-66db62d
+      build: .
+      dockerfile: Dockerfile
+  services:
+    http-server-port:
+      description: HTTP server listening port
+      container: monk-tutorial-app
+      port: $port
+      host-port: $port
+      publish: true
+      protocol: tcp
+  connections:
+    database-connection:
+      target: app-tutorial/mongo
+      service: mongodb
+      optional: true
+      description: Connection to the MongoDB database service
+  variables:
+    port:
+      env: PORT
+      type: int
+      value: 8080
+      description: Port on which the Node.js server listens
+    db-host:
+      env: DB_HOST
+      type: string
+      value: <- connection-hostname("database-connection")
+      description: Hostname for the MongoDB database
+    db-port:
+      env: DB_PORT
+      type: int
+      value: <- connection-port("database-connection")
+      description: Port for the MongoDB database
+
+stack:
+  defines: group
+  members:
+    - app-tutorial/mongo
+    - app-tutorial/monk-tutorial-app
